@@ -5,6 +5,62 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CardDAO {
+	// insertCardByDeckName
+	public static void insertCardByDeckName(String deckName, String q, String a) {
+
+	    String sql =
+	        "INSERT INTO cards(deck_id, question, answer, score, completed) " +
+	        "SELECT id, ?, ?, 0, 0 FROM decks WHERE name = ?";
+
+	    try (Connection conn = Database.connect();
+	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+	        pstmt.setString(1, q);
+	        pstmt.setString(2, a);
+	        pstmt.setString(3, deckName);
+
+	        pstmt.executeUpdate();
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+	
+	
+	// Delete Card
+	public static void deleteCard(int id) {
+
+	    String sql = "DELETE FROM cards WHERE id = ?";
+
+	    try (Connection conn = Database.connect();
+	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+	        pstmt.setInt(1, id);
+	        pstmt.executeUpdate();
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+	
+	// Update Card	
+	public static void updateCard(int id, String q, String a) {
+
+	    String sql = "UPDATE cards SET question = ?, answer = ? WHERE id = ?";
+
+	    try (Connection conn = Database.connect();
+	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+	        pstmt.setString(1, q);
+	        pstmt.setString(2, a);
+	        pstmt.setInt(3, id);
+
+	        pstmt.executeUpdate();
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
 	
 	// Insert a card into a deck using it's name
 	public static void insertMultipleCardsByDeckName(String deckName, List<Card> cards) {

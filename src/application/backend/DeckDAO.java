@@ -11,6 +11,38 @@ import java.sql.SQLException;
 
 public class DeckDAO {
 	
+	// delete deckand cards
+	public static void deleteDeckAndCards(int deckId) {
+
+	    String deleteCards = "DELETE FROM cards WHERE deck_id = ?";
+	    String deleteDeck = "DELETE FROM decks WHERE id = ?";
+
+	    try (Connection conn = Database.connect()) {
+
+	        conn.setAutoCommit(false);
+
+	        try (
+	            PreparedStatement pstmt1 = conn.prepareStatement(deleteCards);
+	            PreparedStatement pstmt2 = conn.prepareStatement(deleteDeck)
+	        ) {
+
+	            pstmt1.setInt(1, deckId);
+	            pstmt1.executeUpdate();
+
+	            pstmt2.setInt(1, deckId);
+	            pstmt2.executeUpdate();
+
+	            conn.commit();
+
+	        } catch (Exception e) {
+	            conn.rollback();
+	            throw e;
+	        }
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
 	
 	public static void insertDeck(String name) {
 

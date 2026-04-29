@@ -131,7 +131,7 @@ public class Main extends Application {
 			
 			// button action (for edit deck button)
 			editBtn.setOnAction(e ->{
-			    Scene editScene = createEditDeckScene(stage, mainSceneHolder[0], d);
+			    Scene editScene = EditDeckView.create(stage, mainSceneHolder[0], d);
 			    stage.setScene(editScene);
 			});
 			
@@ -287,54 +287,6 @@ public class Main extends Application {
 		// Return Scene
 		return new Scene(layout, 900,640);
 	
-	}
-	
-	private Scene createEditDeckScene(Stage stage, Scene mainScene, Deck d) {	
-	    VBox layout = new VBox(15);
-	    layout.setPadding(new Insets(30));
-
-	    Text heading = new Text("Editing: " + d.name);
-	    heading.setFont(Font.font(20));
-
-	    // Question field
-	    Label qlabel = new Label("New Question");
-	    TextField questionField = new TextField();
-
-	    // Answer field
-	    Label alabel = new Label("New Answer");
-	    TextField answerField = new TextField();
-
-	    // Buttons
-	    Button addCardBtn = new Button("Add Card");
-	    Button cancelBtn = new Button("Back");
-
-	    List<Card> tempCards = new ArrayList<>();
-
-	    addCardBtn.setOnAction(e -> {
-	        String q = questionField.getText();
-	        String a = answerField.getText();
-
-	        if (!q.isEmpty() && !a.isEmpty()) {
-	            tempCards.add(new Card(0, 0, q, a, 0, false));
-	            CardDAO.insertMultipleCardsByDeckName(d.name, tempCards);
-	            tempCards.clear();
-	            questionField.clear();
-	            answerField.clear();
-	            System.out.println("Card added to " + d.name);
-	        }
-	    });
-
-	    cancelBtn.setOnAction(e -> stage.setScene(mainScene));
-
-	    layout.getChildren().addAll(
-	        cancelBtn,
-	        heading,
-	        qlabel, questionField,
-	        alabel, answerField,
-	        addCardBtn
-	    );
-
-	    return new Scene(layout, 900, 640);
 	}
 }
 
