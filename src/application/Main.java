@@ -63,7 +63,15 @@ public class Main extends Application {
     // 🔥 MAIN SCREEN
     public Scene createMainScene(Stage stage) {
 
-        List<Deck> decks = DeckDAO.getAllDecks();
+    	List<Deck> decks = DeckDAO.getAllDecks();
+
+    	// sorts incomplete first, completed last
+    	decks.sort((d1, d2) -> {
+    	    boolean c1 = CardDAO.isDeckCompleted(d1.id);
+    	    boolean c2 = CardDAO.isDeckCompleted(d2.id);
+
+    	    return Boolean.compare(c1, c2);
+    	});
 
         VBox container = new VBox(20);
         container.setPadding(new Insets(20));
@@ -143,7 +151,16 @@ public class Main extends Application {
             			"-fx-font-weight: bold;"
             			);
             	
+            	completedText.setRotate(0);
             	deckCard.getChildren().add(completedText);
+            
+            	// Get next Review time
+            	String nextReview = CardDAO.getNextReveiwTime(d.id);
+            	String readable = FormatTimeRemaining.formatTimeRemaining(nextReview);
+            	Text nextText = new Text("Next review: " + readable); // displays the above strings
+            	
+            	deckCard.getChildren().add(nextText); // what does this do i think add's to getchildren scene
+            	
             }
             // 🔥 STUDY BUTTON
             Button studyBtn = new Button("Study Now");
@@ -169,8 +186,9 @@ public class Main extends Application {
             	stage.setScene(studyScene);
             });
             
-            deckCard.getChildren().add(studyBtn);
-
+            if (!isCompleted) {
+            	deckCard.getChildren().add(studyBtn);
+            }
             container.getChildren().add(deckCard);
         }
 

@@ -3,6 +3,7 @@ package application;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
+public class FormatTimeRemaining { // diff from notion
 public static String formatTimeRemaining(String nextReview) {
 
     if (nextReview == null) return "";
@@ -20,4 +21,5 @@ public static String formatTimeRemaining(String nextReview) {
     }
 
     return hours + "h " + minutes + "m";
+}
 }
