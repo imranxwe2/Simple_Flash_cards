@@ -72,23 +72,45 @@ public class Main extends Application {
 
     	    return Boolean.compare(c1, c2);
     	});
-
+    	
+    	// vertical and horizontal containers
         VBox container = new VBox(20);
         container.setPadding(new Insets(20));
+        
+        HBox topBar = new HBox(10);
+        topBar.setPadding(new Insets(10));
 
         // Title
         Text title = new Text("My decks");
         title.setFont(Font.font(30));
         
+        
+        
         // Add deck button
         Button addDeckBtn = new Button("+");
-
+        Button refreshBtn = new Button("⟳");
+        Button importBtn = new Button("Import");
+        Button aiBtn = new Button("Ai");
+        
+        // action for refersh
+        refreshBtn.setOnAction(e -> {
+            stage.setScene(createMainScene(stage));
+        });
+        
+        
+        // action for import
+        importBtn.setOnAction(e -> {
+            Scene importScene = ImportView.create(stage, createMainScene(stage));
+            stage.setScene(importScene);
+        });
+                	
         addDeckBtn.setOnAction(e -> {
             Scene addScene = createAddDeckScene(stage);
             stage.setScene(addScene);
         });
 
-        container.getChildren().addAll(title, addDeckBtn);
+        topBar.getChildren().addAll(addDeckBtn, refreshBtn, importBtn, aiBtn);
+        container.getChildren().addAll(title, topBar);
 
         for (Deck d : decks) {
 
