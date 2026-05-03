@@ -32,7 +32,8 @@ public class StudyView {
 		questionLayout.getChildren().addAll(questionText, doneBtn);
 		
 		// loading question Scene vbox into a new scene
-        Scene questionScene = new Scene(questionLayout, 900, 640); 
+        Scene questionScene = new Scene(questionLayout, 900, 640);
+        
 		
         // --- --- -- -- -  Answer Scene - -- -- --- ---
         VBox answerLayout = new VBox(30);
@@ -71,6 +72,7 @@ public class StudyView {
         	questionText.setText(current.question); // gets q and a using index of card
         	answerText.setText(current.answer);
         };
+        
 	
 	// --------- Navigation ------------
     doneBtn.setOnAction(e -> {
@@ -84,6 +86,60 @@ public class StudyView {
     easyBtn.setOnAction(e -> handleAnswer(cards, index, 3, loadCard, stage, mainScene, questionScene));
     perfectBtn.setOnAction(e -> handleAnswer(cards, index, 4, loadCard, stage, mainScene, questionScene));
     
+ // -------- KEYBOARD CONTROLS --------
+
+ // Question screen controls
+    questionScene.setOnKeyPressed(e -> {
+
+        switch (e.getCode()) {
+
+            case ENTER:
+                stage.setScene(answerScene);
+                answerScene.getRoot().requestFocus();
+                break;
+
+            case ESCAPE:
+                stage.setScene(mainScene);
+                break;
+
+            default:
+                break; // ✅ fixes the error
+        }
+    });
+
+ // Answer screen controls
+    answerScene.setOnKeyPressed(e -> {
+
+        switch (e.getCode()) {
+
+            case DIGIT0:
+                handleAnswer(cards, index, 0, loadCard, stage, mainScene, questionScene);
+                break;
+
+            case DIGIT1:
+                handleAnswer(cards, index, 1, loadCard, stage, mainScene, questionScene);
+                break;
+
+            case DIGIT2:
+                handleAnswer(cards, index, 2, loadCard, stage, mainScene, questionScene);
+                break;
+
+            case DIGIT3:
+                handleAnswer(cards, index, 3, loadCard, stage, mainScene, questionScene);
+                break;
+
+            case DIGIT4:
+                handleAnswer(cards, index, 4, loadCard, stage, mainScene, questionScene);
+                break;
+
+            case ESCAPE:
+                stage.setScene(mainScene);
+                break;
+
+            default:
+                break; // ✅ REQUIRED
+        }
+    });
     
     // exit n save n go back
     exitBtn.setOnAction( e -> stage.setScene(mainScene));
@@ -95,29 +151,35 @@ public class StudyView {
 	
 	// handle ans
 	private static void handleAnswer(List<Card> cards,
-									 int[] index, // has use here itself look above
-									 int score,
-									 Runnable loadCard,
-									 Stage stage,
-									 Scene mainScene, // used to send back to mainScene
-									 Scene questionScene) {
-		
-		// define current
-		Card current = cards.get(index[0]);
-		
-		// update spaced repetition
-		SpacedRepetitionService.updateCard(current, score);
-		
-		// move to next card
-		index[0]++;
-		
-		// handles logic if last card tells it to exit
-		if (index[0] >= cards.size()) {
-			stage.setScene(stage.getScene());
-		}
-		
-		loadCard.run(); // starts run
-		stage.setScene(questionScene); // sets the stage for question's scenef
+            int[] index,
+            int score,
+            Runnable loadCard,
+            Stage stage,
+            Scene mainScene,
+            Scene questionScene) {
+
+		// ✅ FIRST: protect against invalid index
+	if (index[0] >= cards.size()) {
+	stage.setScene(mainScene);
+	return;
 	}
-	
+
+	// safe to access
+	Card current = cards.get(index[0]);
+
+	// update spaced repetition
+	SpacedRepetitionService.updateCard(current, score);
+
+	// move forward
+	index[0]++;
+
+	// ✅ check again AFTER increment
+	if (index[0] >= cards.size()) {
+		stage.setScene(mainScene);
+		return;
+	}
+
+	loadCard.run();
+	stage.setScene(questionScene);
+	}
 }
