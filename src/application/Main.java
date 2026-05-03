@@ -5,6 +5,7 @@ import application.backend.CardDAO;
 import application.backend.Database;
 import application.backend.Deck;
 import application.backend.DeckDAO;
+import application.backend.SettingsService;
 import application.backend.SpacedRepetitionService;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -19,6 +20,7 @@ import javafx.scene.image.Image;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class Main extends Application {
 
@@ -97,6 +99,32 @@ public class Main extends Application {
             stage.setScene(createMainScene(stage));
         });
         
+        
+        // AI button
+        aiBtn.setOnAction(e -> {
+
+            String apiKey = SettingsService.getApiKey();
+
+            // 🔥 If no key → ask user
+            if (apiKey == null || apiKey.isEmpty()) {
+
+                TextInputDialog dialog = new TextInputDialog();
+                dialog.setTitle("API Key Required");
+                dialog.setHeaderText("Enter your OpenAI API key:");
+
+                Optional<String> result = dialog.showAndWait();
+
+                if (!result.isPresent()) return;
+
+                apiKey = result.get();
+
+                SettingsService.saveApiKey(apiKey);
+            }
+
+            // go to AI screen
+            Scene aiScene = AIView.create(stage, createMainScene(stage));
+            stage.setScene(aiScene);
+        });
         
         // action for import
         importBtn.setOnAction(e -> {
