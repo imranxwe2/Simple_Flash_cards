@@ -30,7 +30,9 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) {
-
+    	
+    	Database.initializeDatabase();
+    	
         Connection conn = Database.connect();
 
         if (conn != null) {

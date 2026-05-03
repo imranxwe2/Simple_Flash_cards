@@ -30,7 +30,15 @@ public class AIView {
         Button generateBtn = new Button("Generate");
         Button backBtn = new Button("Back");
         Button changeKeyBtn = new Button("Change API Key");
-
+        
+        // warning
+        Label warning = new Label("⚠ Only compatible with Google Gemini API keys (AIza...)");
+        warning.setStyle(
+            "-fx-text-fill: #cc0000;" +   // red color
+            "-fx-font-size: 12px;" +
+            "-fx-font-weight: bold;"
+        );
+        
         // 🔙 Back button
         backBtn.setOnAction(e -> stage.setScene(mainScene));
 
@@ -130,7 +138,7 @@ public class AIView {
 
         // layout
         layout.getChildren().addAll(
-                backBtn,
+                backBtn, warning, 
                 topicLabel, topicField,
                 amountLabel, amountField,
                 generateBtn,
